@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: user
+      MYSQL_USER: password
+      MYSQL_PASSWORD: pwd
+    ports:
+      - "3306:3306"
+  apache_php:
+    build:
+      context: ./engine/apache-php/
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:80"
+    networks:
+      - default
+    depends_on:
+      - mysql
+
+networks:
+  default:
+    name: front_default
+volumes:
+  db_data:
